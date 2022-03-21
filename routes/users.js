@@ -11,7 +11,7 @@ router.post('/', userController.store );
 
 router.put('/', userController.update);
 
-router.delete('/', userController.destroy);
+router.delete('/:id', userController.destroy);
 
 router.patch('/', userController.updatePath);
 

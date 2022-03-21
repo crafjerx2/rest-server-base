@@ -1,16 +1,24 @@
-const { response } = require('express');
+const { response, request } = require('express');
 
 class UserController {
 
-    index(req, res = response) {
+    index(req = request, res = response) {
+
+        const query = req.query;
+
         res.json({
-            'msg': 'get API'
+            'msg': 'get API',
+            query
         });
     }
 
     store = (req, res = response) => {
+        const {name, age} = req.body;
+
         res.json({
-            'msg': 'post API'
+            'msg': 'post API',
+            name,
+            age
         });
     }
 
@@ -20,9 +28,13 @@ class UserController {
         });
     }
 
-    destroy = (req, res = response) => {
+    destroy = (req = request, res = response) => {
+
+        const { id } = req.params;
+
         res.json({
-            'msg': 'delete API'
+            'msg': 'delete API',
+            id
         });
     }
 
