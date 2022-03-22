@@ -20,7 +20,7 @@ const userSchema = Schema({
     rol: {
         type: String,
         required: true,
-        enum: ['ADMIN_ROLE', 'USER_ROLE']
+        enum: ['ADMIN_ROL', 'USER_ROL']
     },
     status: {
         type: Boolean,
@@ -32,4 +32,4 @@ const userSchema = Schema({
     },
 });
 
-modoule.exports = model('User', userSchema);
+module.exports = mongoose.model('User', userSchema);
