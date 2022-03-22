@@ -1,5 +1,7 @@
 const { response, request } = require('express');
 
+const User = require('../models/User');
+
 class UserController {
 
     index(req = request, res = response) {
@@ -13,12 +15,11 @@ class UserController {
     }
 
     store = (req, res = response) => {
-        const {name, age} = req.body;
+      //  const {name, email, password, img, rol} = req.body;
+      const { body } = req;
 
         res.json({
-            'msg': 'post API',
-            name,
-            age
+           body
         });
     }
 
