@@ -1,62 +1,72 @@
-const { response, request } = require('express');
-const bcrypt = require('bcryptjs');
+const { response, request } = require("express");
+const bcrypt = require("bcryptjs");
 
-const User = require('../models/User');
+const User = require("../models/user");
 
 class UserController {
+  index =  async (req = request, res = response) => {
+    const {limit = 5, skip = 0} = req.query;
+    const conditions = { status: true }
 
-    index(req = request, res = response) {
+    const [ count, users ] = await Promise.all([
+        User.countDocuments(conditions),
+        User.find(conditions)
+            .limit( Number(limit) )
+            .skip( Number(skip) )
+    ]);
 
-        const query = req.query;
+    res.json({
+      count,
+      users
+    });
+  }
 
-        res.json({
-            'msg': 'get API',
-            query
-        });
+  store = async (req, res = response) => {
+    const { name, email, password, img, rol } = req.body;
+
+    const user = new User({ name, email, password, img, rol });
+
+    //encript password
+    const salt = bcrypt.genSaltSync();
+    user.password = await bcrypt.hash(password, salt);
+
+    await user.save();
+
+    res.json({
+      user,
+    });
+  };
+
+  update = async (req, res = response) => {
+    const { id } = req.params;
+    const { _id, password, google, ...data } = req.body;
+    
+    if( password ) {
+        const salt = bcrypt.genSaltSync();
+        data.password = await bcrypt.hash(password, salt);
     }
 
-    store = async (req, res = response) => {
-      const {name, email, password, img, rol} = req.body;
+    const user = await User.findByIdAndUpdate(id, data);
 
-      const user = new User({name, email, password, img, rol});
+    res.json({
+        user
+    });
 
-      //check email
+  };
 
-      //encript password
-      const salt = bcrypt.genSaltSync();
-      user.password = await bcrypt.hash(password, salt);
+  destroy = async (req = request, res = response) => {
+    const { id } = req.params;
 
-      await user.save();
+    const user = await User.findByIdAndUpdate(id, {status: false});
 
-        res.json({
-           user
-        });
-    }
+    res.json(user);
+  };
 
-    update = (req, res = response) => {
-        res.json({
-            'msg': 'put API'
-        });
-    }
-
-    destroy = (req = request, res = response) => {
-
-        const { id } = req.params;
-
-        res.json({
-            'msg': 'delete API',
-            id
-        });
-    }
-
-    updatePath = (req, res = response) => {
-        res.json({
-            'msg': 'patch API'
-        });
-    }
-
+  updatePath = (req, res = response) => {
+    res.json({
+      msg: "patch API",
+    });
+  };
 }
-
-
 
 module.exports = UserController;
