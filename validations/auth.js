@@ -9,7 +9,16 @@ const validatorLogin = [
     }
 ];
 
+const validatorGoogleSingIn = [
+    check('id_token', 'El token es requerido.').not().isEmpty(),
+    (req, res, next) => {
+        validateResult(req, res, next);
+    }
+]
+;
+
 
 module.exports = {
-    validatorLogin
+    validatorLogin,
+    validatorGoogleSingIn
 }

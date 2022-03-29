@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-signin-client_id" content="312261800318-68juhv5jafl9q2qlifou098p5mkgu5q4.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="312261800318-4nb7384179ct54gq80tc073ppmifd9ki.apps.googleusercontent.com">
     <title>google sign in</title>
 </head>
 <body>
@@ -19,12 +19,29 @@
 
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script>
+
+        const hostname = window.location.hostname.includes('localhost');
+        const url = (hostname) ? 'http://localhost:8080/api/auth/google' 
+                               : 'https://resserver-idcas.herokuapp.com/api/auth/google';
+
         function onSignIn(googleUser) {
             var profile = googleUser.getBasicProfile();
             console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
             console.log('Name: ' + profile.getName());
             console.log('Image URL: ' + profile.getImageUrl());
             console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+
+            const id_token = googleUser.getAuthResponse().id_token;
+            const data = { id_token }
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify( data )
+            })
+            .then( resp => resp.json() )
+            .then( data => console.log('Server responding: ', data) )
+            .catch( console.log() )
+
         }
 
         function signOut() {
