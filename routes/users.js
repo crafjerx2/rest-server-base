@@ -1,20 +1,33 @@
 const { Router } = require('express');
-const UserController = require('../controllers/UserController');
+const { 
+    getAllUsers, 
+    getUser, 
+    createUser,
+    updateUser,
+    deleteUser } = require('../controllers/user');
+const { hasRol, isAdmin, validateJWT } = require('../middlewares/');
+
 const { 
     validatorCreateUser, 
     validatorUpdateUser,
-    validatorDeleteUser } = require('../validations/users');
+    validatorDeleteUser, 
+    validatorGeteUser} = require('../validations/users');
 
 const router = Router();
 
-const userController = new UserController();
+router.get('/', getAllUsers);
 
-router.get('/', userController.index);
+router.get('/:id', validatorGeteUser, getUser);
 
-router.post('/', validatorCreateUser, userController.store );
+router.post('/', validatorCreateUser, createUser );
 
-router.put('/:id', validatorUpdateUser, userController.update);
+router.put('/:id', validatorUpdateUser, updateUser);
 
-router.delete('/:id', validatorDeleteUser, userController.destroy);
+router.delete('/:id', 
+    validatorDeleteUser, 
+    validateJWT, 
+    isAdmin,
+    hasRol('DEV_ROL', 'SALE_ROL'), 
+    deleteUser);
 
 module.exports = router;

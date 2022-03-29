@@ -1,4 +1,4 @@
-const Server = require('./models/Server');
+const Server = require('./config/Server');
 
 require('dotenv').config();
 

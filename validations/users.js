@@ -24,15 +24,20 @@ const userExists = async(id = '') => {
     }
 }
 
+const userNotActive = async(id = '') => {
+    const user = await User.findOne({_id: id, status: false});
+    if( user ) {
+        throw new Error(`El usuario esta borrado.`);
+    }
+}
 
 const validatorCreateUser = [
-    check('name', 'El nombre es obligatorio.').exists().not().isEmpty(),
-    check('email', 'El correo es obligatorio.').exists().not().isEmpty(),
+    check('name', 'El nombre es obligatorio.').not().isEmpty(),
     check('email', 'El correo no es válido.').isEmail(),
     check('email').custom( emailExists ),
-    check('password', 'La contraseña es obligatoria.').exists().not().isEmpty(),
+    check('password', 'La contraseña es obligatoria.').not().isEmpty(),
     check('password', 'La contraseña debe ser con más de 6 caracteres').isLength({ min: 6 }),
-    check('rol', 'El rol  es obligatorio.').exists().not().isEmpty(),
+    check('rol', 'El rol  es obligatorio.').not().isEmpty(),
     check('rol').custom( isRole ),
 
     (req, res, next) => {
@@ -49,20 +54,27 @@ const validatorUpdateUser = [
     }
 ];
 
-const validatorAllUsers = [
-    check('limit', 'El limite debe ser un valor númerico').isNumeric(),
-    check('skip', 'El skip debe ser un valor númerico').isNumeric(),
-    (req, res, next) => {
-        validateResult(req, res, next);
-    }
-];
-
 const validatorDeleteUser = [
     check('id', 'El id no es válido').isMongoId(),
     check('id').custom( userExists ),
+    check('id').custom( userNotActive ),
     (req, res, next) => {
         validateResult(req, res, next);
     }
 ];
 
-module.exports = { validatorCreateUser, validatorUpdateUser, validatorDeleteUser }
+const validatorGeteUser = [
+    check('id', 'El id no es válido').isMongoId(),
+    check('id').custom( userExists ),
+    check('id').custom( userNotActive ),
+    (req, res, next) => {
+        validateResult(req, res, next);
+    }
+];
+
+module.exports = { 
+    validatorCreateUser, 
+    validatorUpdateUser, 
+    validatorDeleteUser,
+    validatorGeteUser
+}

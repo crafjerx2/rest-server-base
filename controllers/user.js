@@ -3,8 +3,8 @@ const bcrypt = require("bcryptjs");
 
 const User = require("../models/user");
 
-class UserController {
-  index =  async (req = request, res = response) => {
+
+const getAllUsers =  async (req = request, res = response) => {
     const {limit = 5, skip = 0} = req.query;
     const conditions = { status: true }
 
@@ -19,9 +19,20 @@ class UserController {
       count,
       users
     });
-  }
+}
 
-  store = async (req, res = response) => {
+const getUser = async (req, res = response) => {
+  const { id } = req.params;
+  
+  const user = await User.findById(id);
+
+  res.json({
+      user
+  });
+
+};
+
+const createUser = async (req, res = response) => {
     const { name, email, password, img, rol } = req.body;
 
     const user = new User({ name, email, password, img, rol });
@@ -35,9 +46,9 @@ class UserController {
     res.json({
       user,
     });
-  };
+};
 
-  update = async (req, res = response) => {
+const updateUser = async (req, res = response) => {
     const { id } = req.params;
     const { _id, password, google, ...data } = req.body;
     
@@ -52,21 +63,19 @@ class UserController {
         user
     });
 
-  };
+};
 
-  destroy = async (req = request, res = response) => {
+const deleteUser = async (req = request, res = response) => {
     const { id } = req.params;
-
     const user = await User.findByIdAndUpdate(id, {status: false});
 
     res.json(user);
-  };
+};
 
-  updatePath = (req, res = response) => {
-    res.json({
-      msg: "patch API",
-    });
-  };
-}
-
-module.exports = UserController;
+module.exports = {
+  getAllUsers,
+  getUser,
+  createUser,
+  updateUser,
+  deleteUser
+};
