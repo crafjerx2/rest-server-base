@@ -9,7 +9,10 @@ class Server {
         this.app = express();
         this.port = process.env.PORT;
         this.authRoutePath = '/api/auth';
+        this.searchRoutePath = '/api/search';
         this.userRoutePath = '/api/users';
+        this.categoryRoutePath = '/api/categories';
+        this.productRoutePath = '/api/products';
         
         this.connectDB();
         this.middlewares();
@@ -28,7 +31,10 @@ class Server {
 
     routes() {
         this.app.use(this.authRoutePath, require('../routes/auth'));
+        this.app.use(this.searchRoutePath, require('../routes/search'));
         this.app.use(this.userRoutePath, require('../routes/users'));
+        this.app.use(this.categoryRoutePath, require('../routes/categories'));
+        this.app.use(this.productRoutePath, require('../routes/products'));
     }
 
     listen() {

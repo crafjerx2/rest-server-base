@@ -1,7 +1,6 @@
 const { check } = require("express-validator");
 const { validateResult } = require("../middlewares/user-validator");
-const Role = require('../models/role');
-const User = require('../models/user');
+const { Role, User } = require('../models');
 
 const isRole = async (name = '') => {
     const rol = await Role.findOne({ name });
