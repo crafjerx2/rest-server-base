@@ -13,14 +13,14 @@ const login = async (req, res) => {
         //email no exists
         if( !user ) {
             res.status(400).json({
-                msg: "Usuario / password incorrecto"
+                msg: "Usuario / password incorrecto - email no existe"
             });
         }
 
         //usuario activo
         if( ! user.status ) {
             res.status(400).json({
-                msg: "Usuario / password incorrecto"
+                msg: "Usuario / password incorrecto - inactivo"
             });
         }
 
@@ -35,7 +35,7 @@ const login = async (req, res) => {
         //Generate JWT
         const token = await genarateJWT(user.id);
 
-        res.json({
+        return res.json({
             user,
             token
         });
